@@ -1,6 +1,6 @@
 # Omarchy pairing dropdown
 
-This bar widget generates a one-time OpenCode remote pairing QR code on demand. It requires OpenCode, Python 3, `qrencode`, and systemd user services. Generating a code enables OpenCode remote access through OpenTunnel; keep the code private. The code expires after five minutes.
+Open the bar widget and select **Generate remote QR code** to create a one-time OpenCode pairing code. Opening the widget alone does not enable remote access. It requires OpenCode, Python 3, `qrencode`, and systemd user services. Generating a code enables OpenCode remote access through OpenTunnel; keep the code private. The code expires after five minutes.
 
 To install from this repository: `omarchy plugin add https://github.com/kkaattssuu/opencode-phone.git --enable`. If needed, move it with `omarchy bar move io.github.kkaattssuu.opencode-phone --section right`.
 

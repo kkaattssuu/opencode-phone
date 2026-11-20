@@ -4,7 +4,7 @@ import subprocess
 import sys
 
 try:
-    result = subprocess.run(['opencode', 'pair', '--remote'], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=35, check=True)
+    result = subprocess.run(['opencode', 'pair', '--remote', '--yes'], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=35, check=True)
     output = re.sub(rb'\x1b\[[0-9;?]*[A-Za-z]', b'', result.stdout)
     urls = re.findall(rb'https://[^\s\x1b]+/auth/connect/[A-Za-z0-9_-]+', output)
     if not urls or len(urls[0]) > 4096:

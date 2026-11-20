@@ -19,7 +19,7 @@ Panel {
   property bool autoError: false
   Commons.Translations { id: strings; directory: Qt.resolvedUrl("i18n") }
   onOpenedChanged: {
-    if (opened) { generate(); refreshAutostart("status") }
+    if (opened) { refreshAutostart("status") }
     else { cancelled = true; if (generator.running) generator.running = false; rows = []; failed = false }
   }
   function generate() {
@@ -52,7 +52,7 @@ Panel {
       if (lines.length < 20 || lines.length > 200 || !lines.every(l => l.length === lines.length && /^[01]+$/.test(l))) { root.failed = true; return }
       root.rows = lines
     }}
-    onExited: function(code) { if (root.cancelled && root.opened) { Qt.callLater(root.generate); return } if (!root.cancelled && root.opened && code !== 0) root.failed = true }
+    onExited: function(code) { if (!root.cancelled && root.opened && code !== 0) root.failed = true }
   }
   BarIconButton {
     id: button
@@ -131,6 +131,7 @@ Panel {
         }
         Text { textFormat: Text.PlainText; text: strings.t("autostartInfo"); color: "#c0aeb6"; width: parent.width; wrapMode: Text.Wrap }
         Text { visible: root.autoError; textFormat: Text.PlainText; text: strings.t("autostartError"); color: "#ff6688"; width: parent.width; wrapMode: Text.Wrap }
+        Text { textFormat: Text.PlainText; text: strings.t("remoteWarning"); color: "#c0aeb6"; width: parent.width; wrapMode: Text.Wrap }
         Rectangle {
           width: parent.width; height: Style.space(42); radius: Style.space(10); color: "#ff0055"; opacity: generator.running ? 0.55 : 1
           Text { anchors.centerIn: parent; textFormat: Text.PlainText; text: strings.t("regenerate"); color: "#eff8ff"; font.bold: true }

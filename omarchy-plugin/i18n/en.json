@@ -2,9 +2,10 @@
   "title": "Connect your phone",
   "loading": "Generating QR code\u2026",
   "hint": "Scan with the phone app. This code expires shortly.",
-  "regenerate": "Generate a new code",
+  "regenerate": "Generate remote QR code",
   "error": "Could not generate a code. Check that OpenCode and qrencode are installed and the laptop is online.",
   "autostart": "Start after login",
   "autostartInfo": "Restores access after a reboot when you log in. Pairing expires after 30 days.",
-  "autostartError": "Could not change the startup timer."
+  "autostartError": "Could not change the startup timer.",
+  "remoteWarning": "Generating a QR code enables internet access to your OpenCode server."
 }
