@@ -37,5 +37,12 @@ signals:
  void changed();
 private:void fail(const QString &s){data.clear();message=s;working=false;emit changed();} QProcess proc;QTimer timer;QStringList data;QString message=tr("Generate a code to connect your phone.");bool working=false;
 };
-int main(int argc,char**argv){QGuiApplication app(argc,argv);app.setDesktopFileName("phonepair");Pairing p;QQmlApplicationEngine engine;engine.rootContext()->setContextProperty("pairing",&p);engine.load(QUrl("qrc:/Main.qml"));if(engine.rootObjects().isEmpty())return 1;return app.exec();}
+int main(int argc,char**argv){QGuiApplication app(argc,argv);app.setDesktopFileName("phonepair");Pairing p;
+ if(app.arguments().contains("--self-test")){
+  QObject::connect(&p,&Pairing::changed,&app,[&]{if(!p.busy())app.exit(p.rows().size()>=20?0:1);});
+  QTimer::singleShot(15000,&app,[&]{app.exit(2);});
+  QTimer::singleShot(0,&p,[&]{p.generate();});
+  return app.exec();
+ }
+ QQmlApplicationEngine engine;engine.rootContext()->setContextProperty("pairing",&p);engine.load(QUrl("qrc:/Main.qml"));if(engine.rootObjects().isEmpty())return 1;return app.exec();}
 #include "main.moc"

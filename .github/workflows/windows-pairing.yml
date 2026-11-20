@@ -41,6 +41,17 @@ jobs:
           $p.Refresh()
           if ($p.HasExited) { throw "App exited early with code $($p.ExitCode)" }
           Stop-Process -Id $p.Id -Force
+      - name: Test pairing with synthetic command
+        shell: pwsh
+        working-directory: desktop/dist
+        run: |
+          $testDir = Join-Path $env:RUNNER_TEMP 'fake-opencode'
+          New-Item -ItemType Directory -Force $testDir | Out-Null
+          Set-Content -Path (Join-Path $testDir 'opencode.cmd') -Value '@echo https://example.invalid/auth/connect/synthetic_test_code'
+          $env:PATH = "$testDir;$env:PATH"
+          $env:QT_QPA_PLATFORM = 'offscreen'
+          $p = Start-Process -FilePath .\phonepair.exe -ArgumentList '--self-test' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "Synthetic pairing test failed: $($p.ExitCode)" }
       - uses: actions/upload-artifact@v4
         with:
           name: OpenCode-Phone-Pairing-Windows
