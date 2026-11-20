@@ -16,6 +16,11 @@ ApplicationWindow {
    Label{anchors.centerIn:parent;visible:pairing.rows.length===0;text:pairing.busy?qsTr("Generating…"):qsTr("Your QR code will appear here");color:"#c0aeb6"}
   }
   Label{Layout.fillWidth:true;text:qsTr("Generating a code enables internet access to your OpenCode server.");wrapMode:Text.Wrap;color:"#c0aeb6"}
+  RowLayout{Layout.fillWidth:true;visible:pairing.supportsAutoStart
+   Label{Layout.fillWidth:true;text:qsTr("Start after login");color:"#eff8ff"}
+   Switch{checked:pairing.autoStart;onClicked:pairing.setAutoStart(checked)}
+  }
+  Label{Layout.fillWidth:true;visible:pairing.supportsAutoStart;text:qsTr("Starts OpenCode when you sign in. Pairing expires after 30 days.");wrapMode:Text.Wrap;color:"#c0aeb6"}
   Label{Layout.fillWidth:true;text:pairing.status;wrapMode:Text.Wrap;color:"#c0aeb6"}
   Button{Layout.fillWidth:true;text:qsTr("Generate QR code");highlighted:true;enabled:!pairing.busy;onClicked:pairing.generate()}
  }

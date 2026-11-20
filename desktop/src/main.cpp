@@ -3,6 +3,8 @@
 #include <QQmlContext>
 #include <QProcess>
 #include <QTimer>
+#include <QSettings>
+#include <QStandardPaths>
 #include <QRegularExpression>
 #include "vendor/qrcodegen.hpp"
 #include <exception>
@@ -11,6 +13,8 @@ class Pairing:public QObject {
  Q_PROPERTY(QStringList rows READ rows NOTIFY changed)
  Q_PROPERTY(QString status READ status NOTIFY changed)
  Q_PROPERTY(bool busy READ busy NOTIFY changed)
+ Q_PROPERTY(bool supportsAutoStart READ supportsAutoStart CONSTANT)
+ Q_PROPERTY(bool autoStart READ autoStart NOTIFY changed)
 public:
  Pairing(){timer.setSingleShot(true);timer.setInterval(60000);connect(&timer,&QTimer::timeout,this,[this]{if(proc.state()!=QProcess::NotRunning){proc.kill();fail(tr("Pairing timed out."));}});connect(&proc,&QProcess::finished,&timer,&QTimer::stop);connect(&proc,&QProcess::finished,this,[this](int code,QProcess::ExitStatus state){
    QString output=QString::fromUtf8(proc.readAllStandardOutput()); output.remove(QRegularExpression("\\x1b\\[[0-9;?]*[A-Za-z]"));
@@ -24,6 +28,32 @@ public:
    } catch(const std::exception &) {link.fill('\0');fail(tr("QR generation failed."));return;}
    message=tr("Scan the code in the phone app. It expires in five minutes.");working=false;emit changed();
  });connect(&proc,&QProcess::errorOccurred,this,[this](QProcess::ProcessError e){if(e==QProcess::FailedToStart)fail(tr("OpenCode was not found. Install it and add it to PATH."));});}
+ bool supportsAutoStart()const {
+#ifdef Q_OS_WIN
+  return true;
+#else
+  return false;
+#endif
+ }
+ bool autoStart()const {
+#ifdef Q_OS_WIN
+  QSettings run("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",QSettings::NativeFormat);
+  return run.contains("OpenCodePhonePairing");
+#else
+  return false;
+#endif
+ }
+ Q_INVOKABLE void setAutoStart(bool enabled){
+#ifdef Q_OS_WIN
+  QSettings run("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",QSettings::NativeFormat);
+  if(enabled){QString cmd=QStandardPaths::findExecutable("cmd.exe");if(cmd.isEmpty()){fail(tr("Windows command interpreter not found."));return;}run.setValue("OpenCodePhonePairing",QString("\"%1\" /d /c opencode service start").arg(cmd));}
+  else run.remove("OpenCodePhonePairing");
+  run.sync();if(run.status()!=QSettings::NoError){fail(tr("Could not update automatic startup."));return;}
+  emit changed();
+#else
+  Q_UNUSED(enabled)
+#endif
+ }
  QStringList rows()const{return data;} QString status()const{return message;} bool busy()const{return working;}
  Q_INVOKABLE void generate(){if(working)return;data.clear();message=tr("Generating…");working=true;emit changed();
 #ifdef Q_OS_WIN
