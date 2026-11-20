@@ -2,39 +2,43 @@
 
 ![OpenCode Phone icon](docs/app-icon.png)
 
-Access OpenCode and Codex on your computer from an Android phone, with QR pairing and terminal views.
-
-## Downloads and project status
-
-| Component | Availability | Testing status |
-| --- | --- | --- |
-| Android app | [Download APK](https://github.com/kkaattssuu/opencode-phone/releases/latest) | Version 1.0.1 builds; the latest Codex disconnect changes have not been tested on a physical phone. |
-| Windows pairing app | [Download Windows x64 preview](https://github.com/kkaattssuu/opencode-phone/releases/tag/desktop-v1.0.0) | **Untested with a real Windows installation and phone.** Automated Windows startup and synthetic QR tests passed. |
-| Linux pairing app | [Source and build instructions](desktop/README.md) | **Untested end to end.** A Linux prototype compiled; no Linux desktop binary is provided yet. |
-| Omarchy pairing dropdown | [Installation and removal instructions](omarchy-plugin/README.md) | QR generation and display tested locally; phone scanning and reboot reconnection have not been verified end to end. |
-
-The Android APK is debug-signed. Android may require uninstalling a copy signed with a different key before installing it.
+Access OpenCode and Codex on your computer from an Android phone.
 
 ## Connect your phone
 
-Install OpenCode on the computer, start its background service, and run `opencode pair --remote` or generate a code with a pairing app. In the Android app select **Connect laptop** and scan the QR code. Install and sign in to Codex separately to use Codex.
+1. Install the [Android app](https://github.com/kkaattssuu/opencode-phone/releases/latest).
+2. Install OpenCode on your computer:
 
-The computer must be awake, online and signed in. Pairing through OpenTunnel exposes the password-protected OpenCode service to the internet. A pairing code is single-use and expires after five minutes; keep it private. Paired sessions expire after 30 days.
+   **Linux:**
+   ```bash
+   curl -fsSL https://opencode.ai/v2/install | bash
+   ```
 
-The Android app includes OpenCode, Codex, an Android sandbox shell, and a laptop shell. The laptop shell can execute commands as the computer user. Task notifications require an active connection and Android permission; Android may restrict background operation. In Codex simple view, completion notifications can include an answer and session name. OpenCode notifications may not open the exact session, and Codex terminal notifications have limited details.
+   **macOS:**
+   ```bash
+   brew install anomalyco/tap/opencode-v2
+   ```
 
-## Repository guide
+   **Windows:** Download the Windows CLI from [OpenCode's installation page](https://opencode.ai/docs/) and add it to your PATH.
 
-- `app/` — Android source and phone terminal library.
-- `desktop/` — Windows and Linux pairing app source.
-- `omarchy-plugin/` and root `manifest.json` — Omarchy bar dropdown.
-- `laptop/` — example Linux service files and pairing script.
-- `docs/` — app icon.
+3. On the computer, open a terminal (PowerShell on Windows) and run:
+   ```sh
+   opencode service start
+   opencode pair --remote
+   ```
+   Accept the remote access prompt if shown.
+4. In the Android app, choose **Connect laptop** and scan the QR code shown in the terminal.
 
-## Build Android
+Keep the computer awake, online and signed in. Remote pairing exposes the password-protected OpenCode service to the internet; keep the QR code private. Codes expire after five minutes and paired sessions after 30 days. To use Codex, install it and sign in on the computer separately.
 
-Install JDK 21 and Android SDK 35, set `ANDROID_HOME` or the ignored `local.properties`, then run `./gradlew assembleDebug`. The APK is generated in `app/build/outputs/apk/debug/`. For native phone terminal libraries, use Android NDK 27.2.12479018 and run `PHONE_NDK_PATH=/path/to/ndk app/src/main/jni/build-native.sh`.
+## Omarchy dropdown
 
-## Licensing
+Omarchy users can install the [pairing dropdown](omarchy-plugin/README.md) to generate QR codes from the bar and optionally start OpenCode after login.
 
-The Omarchy plugin is offered under the [MIT license](LICENSE). Third-party components retain their own licenses, including the QR encoder and xterm.js. The Android and desktop application source has not been assigned a separate project license.
+## Android build
+
+Install JDK 21 and Android SDK 35, set `ANDROID_HOME`, and run `./gradlew assembleDebug`. The APK appears in `app/build/outputs/apk/debug/`. The downloadable APK is debug-signed; Android may require uninstalling a copy signed with a different key.
+
+The Android disconnect changes and reboot reconnection have not been tested end to end on a physical phone. Notifications depend on Android background restrictions and an active connection.
+
+The Omarchy plugin is offered under the [MIT license](LICENSE). Third-party components retain their own licenses. The Android application source has not been assigned a separate project license.
