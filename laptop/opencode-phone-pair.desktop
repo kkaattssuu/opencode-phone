@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=OpenCode Phone Pairing
+Comment=Display a QR code to connect your phone to OpenCode
+Exec=xdg-terminal-exec opencode pair --remote
+Icon=utilities-terminal
+Terminal=false
+Categories=Development;

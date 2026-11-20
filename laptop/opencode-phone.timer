@@ -1,0 +1,10 @@
+[Unit]
+Description=Start and check the OpenCode background service
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=1min
+Unit=opencode-phone.service
+
+[Install]
+WantedBy=timers.target
