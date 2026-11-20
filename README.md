@@ -1,5 +1,11 @@
 # OpenCode Phone
 
+![OpenCode Phone icon](docs/app-icon.png)
+
+**Version 1.0.0** · [Download the Android APK](https://github.com/kkaattssuu/opencode-phone/releases/latest)
+
+The downloadable APK is a debug-signed build. Android may require uninstalling an existing copy signed with a different key before installation.
+
 Android 8+ app for connecting to OpenCode and the Codex CLI running on your laptop.
 
 ## First connection
