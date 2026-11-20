@@ -1,0 +1,48 @@
+name: Build Windows pairing app
+on:
+  workflow_dispatch:
+  push:
+    branches: [windows-pairing-app]
+    paths: ['desktop/**', '.github/workflows/windows-pairing.yml']
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1
+      - uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.3'
+          arch: win64_msvc2022_64
+      - name: Build
+        shell: cmd
+        working-directory: desktop
+        run: |
+          mkdir build
+          cd build
+          qmake ..\phonepair.pro CONFIG+=release
+          nmake
+      - name: Package Qt dependencies
+        shell: cmd
+        working-directory: desktop
+        run: |
+          mkdir dist
+          copy build\release\phonepair.exe dist\
+          windeployqt --release --qmldir src dist\phonepair.exe
+      - name: Smoke test startup
+        shell: pwsh
+        working-directory: desktop/dist
+        run: |
+          $env:QT_QPA_PLATFORM = 'offscreen'
+          $p = Start-Process -FilePath .\phonepair.exe -PassThru
+          Start-Sleep -Seconds 5
+          $p.Refresh()
+          if ($p.HasExited) { throw "App exited early with code $($p.ExitCode)" }
+          Stop-Process -Id $p.Id -Force
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OpenCode-Phone-Pairing-Windows
+          path: desktop/dist/
+          if-no-files-found: error
