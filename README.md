@@ -8,6 +8,10 @@ The downloadable APK is a debug-signed build. Android may require uninstalling a
 
 Android 8+ app for connecting to OpenCode and the Codex CLI running on your laptop.
 
+## Windows pairing app
+
+Download the [Windows pairing app](https://github.com/kkaattssuu/opencode-phone/releases/tag/desktop-v1.0.0) to generate QR codes on a Windows PC. Install OpenCode first. The app can optionally start OpenCode when you sign in.
+
 ## First connection
 
 Install OpenCode on the laptop and start its service with `opencode service start`. Run `opencode pair --remote` on the laptop to display a pairing QR code. In the Android app choose **Connect laptop**, allow camera access and scan the code. The laptop must remain awake and online. Install Codex separately and sign in on the laptop to use the Codex views.
