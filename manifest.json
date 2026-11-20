@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.kkaattssuu.opencode-phone",
+  "name": "OpenCode Phone Pairing",
+  "version": "1.0.0",
+  "author": "kkaattssuu",
+  "description": "Show a one-time OpenCode pairing QR code",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "omarchy-plugin/Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "OpenCode Phone Pairing",
+    "description": "Pair your phone by scanning a fresh QR code.",
+    "category": "Network",
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": {},
+    "schema": []
+  },
+  "license": "MIT"
+}

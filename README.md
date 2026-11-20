@@ -2,42 +2,39 @@
 
 ![OpenCode Phone icon](docs/app-icon.png)
 
-**Version 1.0.0** · [Download the Android APK](https://github.com/kkaattssuu/opencode-phone/releases/latest)
+Access OpenCode and Codex on your computer from an Android phone, with QR pairing and terminal views.
 
-The downloadable APK is a debug-signed build. Android may require uninstalling an existing copy signed with a different key before installation.
+## Downloads and project status
 
-Android 8+ app for connecting to OpenCode and the Codex CLI running on your laptop.
+| Component | Availability | Testing status |
+| --- | --- | --- |
+| Android app | [Download APK](https://github.com/kkaattssuu/opencode-phone/releases/latest) | Version 1.0.1 builds; the latest Codex disconnect changes have not been tested on a physical phone. |
+| Windows pairing app | [Download Windows x64 preview](https://github.com/kkaattssuu/opencode-phone/releases/tag/desktop-v1.0.0) | **Untested with a real Windows installation and phone.** Automated Windows startup and synthetic QR tests passed. |
+| Linux pairing app | [Source and build instructions](desktop/README.md) | **Untested end to end.** A Linux prototype compiled; no Linux desktop binary is provided yet. |
+| Omarchy pairing dropdown | [Installation and removal instructions](omarchy-plugin/README.md) | QR generation and display tested locally; phone scanning and reboot reconnection have not been verified end to end. |
 
-## Windows pairing app
+The Android APK is debug-signed. Android may require uninstalling a copy signed with a different key before installing it.
 
-Download the [Windows pairing app](https://github.com/kkaattssuu/opencode-phone/releases/tag/desktop-v1.0.0) to generate QR codes on a Windows PC. Install OpenCode first. The app can optionally start OpenCode when you sign in.
+## Connect your phone
 
-## First connection
+Install OpenCode on the computer, start its background service, and run `opencode pair --remote` or generate a code with a pairing app. In the Android app select **Connect laptop** and scan the QR code. Install and sign in to Codex separately to use Codex.
 
-Install OpenCode on the laptop and start its service with `opencode service start`. Run `opencode pair --remote` on the laptop to display a pairing QR code. In the Android app choose **Connect laptop**, allow camera access and scan the code. The laptop must remain awake and online. Install Codex separately and sign in on the laptop to use the Codex views.
+The computer must be awake, online and signed in. Pairing through OpenTunnel exposes the password-protected OpenCode service to the internet. A pairing code is single-use and expires after five minutes; keep it private. Paired sessions expire after 30 days.
 
-The laptop needs to be awake, connected to the internet and logged in. Optional example systemd user units are in `laptop/`; ensure `opencode` is available in the user service PATH before enabling them. OpenCode's tunnel service and your phone's connection must also be available. The tunnel exposes the password-protected OpenCode server to the internet. Protect your phone and pairing links.
+The Android app includes OpenCode, Codex, an Android sandbox shell, and a laptop shell. The laptop shell can execute commands as the computer user. Task notifications require an active connection and Android permission; Android may restrict background operation. In Codex simple view, completion notifications can include an answer and session name. OpenCode notifications may not open the exact session, and Codex terminal notifications have limited details.
 
-Notifications use a foreground service and require notification permission and an active connection. Android may stop or limit monitoring, particularly on Android 15 or when the app is force-stopped; delivery is not guaranteed. Monitoring resumes when opening a signed-in page. Event compatibility and end-to-end operation have not yet been tested on a phone.
+## Repository guide
 
-## Terminals
+- `app/` — Android source and phone terminal library.
+- `desktop/` — Windows and Linux pairing app source.
+- `omarchy-plugin/` and root `manifest.json` — Omarchy bar dropdown.
+- `laptop/` — example Linux service files and pairing script.
+- `docs/` — app icon.
 
-**Phone terminal** runs Android's built-in shell inside this app's sandbox, with the app's permissions and app-private starting directory. It does not provide root, Termux packages, or automatic access to other apps' data. Android controls access to shared files.
+## Build Android
 
-**Laptop terminal** opens an interactive login shell through the paired OpenCode tunnel. It requires the laptop and OpenCode service to be running; it does not require a separate SSH app. Like Codex, the remote terminal can reconnect while its OpenCode terminal session remains available. Do not share the pairing link or your unlocked phone: this shell can run commands as your laptop user.
+Install JDK 21 and Android SDK 35, set `ANDROID_HOME` or the ignored `local.properties`, then run `./gradlew assembleDebug`. The APK is generated in `app/build/outputs/apk/debug/`. For native phone terminal libraries, use Android NDK 27.2.12479018 and run `PHONE_NDK_PATH=/path/to/ndk app/src/main/jni/build-native.sh`.
 
-Both terminal views have an **Aa** control for text size. In fullscreen, tap the floating × to reveal the toolbar. The phone terminal ends when the Android app process is destroyed.
+## Licensing
 
-## Build
-
-Use Android SDK 35 and a full JDK 21 — a JRE is not enough. Point Gradle at the SDK with `sdk.dir` in `local.properties` (or `ANDROID_HOME`), then run `./gradlew assembleDebug`. The debug APK is in `app/build/outputs/apk/debug/`. A different debug signing key may require uninstalling an earlier build first.
-
-## Codex
-
-After pairing OpenCode, choose **Open Codex** on the home screen. The app starts Codex inside an interactive terminal on your laptop using the existing OpenCode tunnel and your normal Codex account and permissions. The session starts in your home directory; use Codex commands to change projects or resume a session. The laptop, OpenCode background service and the tunnel must remain available. The terminal includes a scrollable row of special keys for mobile keyboards.
-
-Codex notices are received through its terminal connection. They depend on the Android app remaining alive and connected; notifications cannot be guaranteed after a disconnect, app force-stop, or background termination. The running terminal can reconnect while its OpenCode PTY remains available.
-
-## Rebuilding the phone shell
-
-The APK includes native terminal libraries for arm64-v8a, armeabi-v7a, x86_64 and x86. To rebuild them, install Android NDK 27.2.12479018, then run `PHONE_NDK_PATH=/path/to/ndk app/src/main/jni/build-native.sh` before building the APK.
+The Omarchy plugin is offered under the [MIT license](LICENSE). Third-party components retain their own licenses, including the QR encoder and xterm.js. The Android and desktop application source has not been assigned a separate project license.

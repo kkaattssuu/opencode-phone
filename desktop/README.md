@@ -1,7 +1,9 @@
-# OpenCode Phone Pairing for Windows
+# Desktop pairing app
 
-The desktop app generates a one-time QR code for the Android app. Install OpenCode on the computer first and ensure `opencode` is available in your PATH. Clicking Generate enables OpenCode remote access through OpenTunnel; the QR expires after five minutes. Keep the code private.
+A QR generator for Windows and Linux. Install OpenCode on the computer and add it to `PATH`; pressing Generate enables OpenCode remote access through OpenTunnel. Pairing codes expire after five minutes.
 
-Windows build: install Qt 6 Quick with the MSVC 2022 x64 kit, open an x64 Native Tools command prompt, and run `qmake phonepair.pro CONFIG+=release`, then `nmake`. Package the executable with `windeployqt --release --qmldir src release\phonepair.exe`. The QR encoder is included under its MIT license in `src/vendor/`.
+**Windows: not tested with a real Windows installation and phone.** An automated Windows build, startup check and synthetic QR test passed. [Download the Windows x64 preview](https://github.com/kkaattssuu/opencode-phone/releases/tag/desktop-v1.0.0), extract it, and run `phonepair.exe`. The optional startup switch adds or removes an entry in the current user's Windows startup registry. Pairing sessions expire after 30 days.
 
-The Windows build workflow packages the executable and Qt runtime. On Windows, **Start after login** adds or removes this app’s entry in your user startup registry. It starts the OpenCode service after you sign in. Turning it off does not stop an already running service or erase pairing. Pairing sessions expire after 30 days.
+**Linux: not tested end to end.** The prototype compiled on Linux; no packaged Linux release is available. To build, install Qt 6 Quick/QML and a C++17 compiler, run `qmake6 phonepair.pro` and then `make`.
+
+For a Windows build, use Qt 6 Quick with the MSVC 2022 x64 kit from an x64 Native Tools command prompt. Run `qmake phonepair.pro CONFIG+=release`, then `nmake`, and package using `windeployqt --release --qmldir src release\phonepair.exe`. The MIT-licensed QR encoder is included in `src/vendor/`.

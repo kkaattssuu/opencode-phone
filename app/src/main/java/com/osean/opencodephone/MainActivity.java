@@ -170,7 +170,7 @@ public class MainActivity extends Activity {
         if(codexWeb!=null)codexWeb.evaluateJavascript("window.releaseTerminal && window.releaseTerminal()",null);
         if(laptopWeb!=null)laptopWeb.evaluateJavascript("window.releaseTerminal && window.releaseTerminal()",null);
         if(simpleWeb!=null)simpleWeb.evaluateJavascript("window.releaseTerminal && window.releaseTerminal()",null);
-        new Handler(getMainLooper()).postDelayed(()->{if(pendingRemoteCloses>0){pendingRemoteCloses=0;new AlertDialog.Builder(this).setMessage("Could not confirm that the remote terminal closed. Check your connection and try again.").setPositiveButton("OK",null).show();}},15000);
+        new Handler(getMainLooper()).postDelayed(()->{if(pendingRemoteCloses>0){pendingRemoteCloses=0;new AlertDialog.Builder(this).setMessage("Could not confirm that the remote terminal closed. Check your connection and try again.").setPositiveButton("OK",null).show();}},30000);
     }
     void remoteCloseResult(boolean ok){
         if(pendingRemoteCloses<=0)return;remoteCloseFailed|=!ok;
